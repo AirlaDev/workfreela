@@ -1,4 +1,4 @@
 # workfreela
 
 ### Descrição
- Desenvolvimento web - API de serviços e profissionais autonomos
+ Desenvolvimento web - API Restful de serviços e profissionais autonomos
