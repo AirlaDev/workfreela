@@ -13,7 +13,7 @@ import java.util.Objects;
 
 public class Profissional {
         @Id
-        @GeneratedValue (strategy =  GenerationType.AUTO)
+        @GeneratedValue (strategy =  GenerationType.IDENTITY)
         private Long id;
         private String nome;
         private String email;
