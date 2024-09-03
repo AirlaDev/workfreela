@@ -1,4 +1,4 @@
-package searchFreelancer.workfreela.entities;
+package searchFreelancer.workfreela.Entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
-@Table(name="profissional")
+@Table(name="Profissional")
 
 public class Profissional {
         @Id
@@ -43,6 +43,8 @@ public class Profissional {
         @Override
         public int hashCode() {
             return Objects.hashCode(id);
-        }
+        } //buscar pelo id
+
+    //fazer o construtor
 
     }
