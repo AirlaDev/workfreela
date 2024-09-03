@@ -14,7 +14,6 @@ public class ServicosService {
     private ServicosRepository servicosRepository;
 
     public Servicos toRecord(Servicos servico){
-
         return servicosRepository.save(servico);
     }
 
