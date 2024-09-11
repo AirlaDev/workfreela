@@ -29,4 +29,13 @@ public class ProfissionalMapper {
             .map(this::toDTO)
             .collect(Collectors.toList());
   }
+  // Convert Entity to DTO with the same ID
+  public ProfissionalDTO toDTO(Profissional entity, Long id) {
+    if (entity == null) {
+      return null;
+    }
+    ProfissionalDTO dto = modelMapper.map(entity, ProfissionalDTO.class);
+    dto.setId_profissional(id); // Ensure the ID is set correctly
+    return dto;
+  }
 }

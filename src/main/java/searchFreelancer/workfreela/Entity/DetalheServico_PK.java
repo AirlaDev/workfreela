@@ -1,41 +1,35 @@
 package searchFreelancer.workfreela.Entity;
 
-//classe auxiliar para pegar a chave primaria das outras classes que ela vai relacionar
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Getter
 @Setter
 @Embeddable
+public class DetalheServico_PK implements Serializable {
 
-public class DetailService_PK {
-    private long id_pk;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER) // Força o carregamento dos dados relacionados
     @JoinColumn(name = "id_profissional")
     private Profissional id_profissional;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_service")
     private Servicos id_servicos;
 
-
-    public DetailService_PK() {
+    public DetalheServico_PK() {
     }
-
-    //compara o objeto
-
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DetailService_PK that = (DetailService_PK) o;
-        return Objects.equals(id_profissional, that.id_profissional) && Objects.equals(id_servicos, that.id_servicos);
+        DetalheServico_PK that = (DetalheServico_PK) o;
+        return Objects.equals(id_profissional, that.id_profissional) &&
+                Objects.equals(id_servicos, that.id_servicos);
     }
 
     @Override
