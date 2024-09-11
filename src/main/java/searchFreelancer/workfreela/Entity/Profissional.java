@@ -4,28 +4,32 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Objects;
 
 @Getter
 @Setter
 @Entity
-@Table(name="profissional") // Certifique-se de que este é o nome correto da tabela no banco de dados
+@Table(name = "profissional")
+
 public class Profissional {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String nome;
     private String email;
     private String telefone;
     private String sexo;
     private String idade;
 
-    // Construtor padrão necessário para JPA
     public Profissional() {}
 
-    // Construtor com parâmetros
+    // Construtor que aceita apenas o ID
+    public Profissional(Long id) {
+        this.id = id;
+    }
+
     public Profissional(Long id, String nome, String email, String telefone, String sexo, String idade) {
         this.id = id;
         this.nome = nome;

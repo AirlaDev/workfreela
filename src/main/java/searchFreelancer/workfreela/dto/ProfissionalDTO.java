@@ -1,30 +1,35 @@
 package searchFreelancer.workfreela.dto;
 
-import lombok.Data;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 import searchFreelancer.workfreela.Entity.Profissional;
 
-@Data
+@Getter
+@Setter
 public class ProfissionalDTO {
 
+    @NotNull(message = "O ID do profissional deve ser informado")
     private Long id_profissional;
+
+    @NotBlank(message = "O nome deve ser informado")
+    @Size(min = 4, message = "O nome deve ter no mínimo 04 caracteres")
     private String nome;
+
+    @Email(message = "Email deve ser válido")
     private String email;
+
     private String telefone;
+
     private String sexo;
+
     private String idade;
 
-    // Construtor padrão
+    // Construtor sem argumentos necessário para a serialização/deserialização
     public ProfissionalDTO() {
-    }
-
-    // Construtor com parâmetros
-    public ProfissionalDTO(Long id_profissional, String nome, String email, String telefone, String sexo, String idade) {
-        this.id_profissional = id_profissional;
-        this.nome = nome;
-        this.email = email;
-        this.telefone = telefone;
-        this.sexo = sexo;
-        this.idade = idade;
     }
 
     // Construtor que recebe uma entidade Profissional
