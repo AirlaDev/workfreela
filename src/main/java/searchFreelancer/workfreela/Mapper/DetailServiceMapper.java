@@ -22,8 +22,15 @@ public class DetailServiceMapper {
     public DetalheServico toEntity(DetailServiceDTO dto) {
         DetalheServico entity = modelMapper.map(dto, DetalheServico.class);
         DetalheServico_PK id = new DetalheServico_PK();
-        id.setId_profissional(new Profissional(dto.getId_profissional()));
-        id.setId_servicos(new Servicos(dto.getId_servicos()));
+        if (dto.getId_profissional() != null) {
+            id.setId_profissional(new Profissional(dto.getId_profissional()));
+        }
+
+        if (dto.getId_servicos() != null) {
+            id.setId_servicos(new Servicos(dto.getId_servicos()));
+        } else {
+            throw new IllegalArgumentException("ID de serviço não pode ser nulo");
+        }
         entity.setId(id);
         return entity;
     }
