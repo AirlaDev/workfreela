@@ -10,6 +10,7 @@ import searchFreelancer.workfreela.Services.ServicosService;
 import searchFreelancer.workfreela.dto.ServicosDTO;
 import searchFreelancer.workfreela.dto.ServicosResponseDTO;
 import searchFreelancer.workfreela.exceptions.ServicoNotFoundException;
+import searchFreelancer.workfreela.facade.FreelancerFacade;
 
 import java.util.List;
 
@@ -19,48 +20,43 @@ import java.util.List;
 public class ServicosController {
 
     @Autowired
-    private ServicosService servicosService;
+    private FreelancerFacade freelancerFacade;
     @Autowired
     private ServicosMapper servicosMapper;
 
+
     @PostMapping
-    public ResponseEntity<ServicosResponseDTO> toRecord (@RequestBody ServicosDTO servicosDTO){
-        Servicos servicos =  servicosMapper.toEntity(servicosDTO);
-        Servicos servicoRecorded = servicosService.toRecord(servicos);
+    public ResponseEntity<ServicosResponseDTO> toRecord(@RequestBody ServicosDTO servicosDTO) {
+        Servicos servicos = servicosMapper.toEntity(servicosDTO);
+        Servicos servicoRecorded = freelancerFacade.addServico(servicos);
         ServicosResponseDTO servicosResponseDTO = servicosMapper.toDTO(servicoRecorded);
         return ResponseEntity.status(HttpStatus.CREATED).body(servicosResponseDTO);
     }
 
     @GetMapping
-    public ResponseEntity<List<ServicosResponseDTO>> searchAll(){
-        List<Servicos> servicos = servicosService.searchAll();
+    public ResponseEntity<List<ServicosResponseDTO>> searchAll() {
+        List<Servicos> servicos = freelancerFacade.getAllServicos();
         List<ServicosResponseDTO> servicosResponseDTOS = servicosMapper.toDTO(servicos);
         return ResponseEntity.status(HttpStatus.OK).body(servicosResponseDTOS);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> searchOne(@PathVariable(value = "id") Long id){
-        try{
-            //chamar metodo searchservicoid
-            Servicos servicoRecorded = servicosService.searchServicoId(id);
-            //transformar objeto servico em dto
-            ServicosResponseDTO servicosResponseDTO = servicosMapper.toDTO(servicoRecorded);
+    public ResponseEntity<Object> searchOne(@PathVariable(value = "id") Long id) {
+        try {
+            Servicos servico = freelancerFacade.getServicoById(id);
+            ServicosResponseDTO servicosResponseDTO = servicosMapper.toDTO(servico);
             return ResponseEntity.status(HttpStatus.OK).body(servicosResponseDTO);
-        } catch (ServicoNotFoundException e){
+        } catch (ServicoNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ServicosResponseDTO> update(@PathVariable(value = "id") Long id,
-                                                      @RequestBody ServicosDTO servicosDTO) {
+    public ResponseEntity<ServicosResponseDTO> update(@PathVariable(value = "id") Long id, @RequestBody ServicosDTO servicosDTO) {
         try {
-            // Transformar DTO em entidade
             Servicos servicos = servicosMapper.toEntity(servicosDTO);
-            // Atualizar o serviço
-            Servicos servicoAtualizado = servicosService.update(id, servicos);
-            // Transformar entidade atualizada em DTO
-            ServicosResponseDTO servicosResponseDTO = servicosMapper.toDTO(servicoAtualizado);
+            Servicos servicoUpdated = freelancerFacade.updateServico(id, servicos);
+            ServicosResponseDTO servicosResponseDTO = servicosMapper.toDTO(servicoUpdated);
             return ResponseEntity.status(HttpStatus.OK).body(servicosResponseDTO);
         } catch (ServicoNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -70,12 +66,11 @@ public class ServicosController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable(value = "id") Long id) {
         try {
-            servicosService.delete(id);
+            freelancerFacade.deleteServico(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (ServicoNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-
 
 }
