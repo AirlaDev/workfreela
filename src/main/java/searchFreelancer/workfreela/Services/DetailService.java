@@ -4,13 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import searchFreelancer.workfreela.Entity.DetalheServico;
 import searchFreelancer.workfreela.Entity.DetalheServico_PK;
-import searchFreelancer.workfreela.Entity.Profissional;
-import searchFreelancer.workfreela.Entity.Servicos;
 import searchFreelancer.workfreela.dto.DetailResponseDTO;
+import searchFreelancer.workfreela.factory.DetalheServicoFactory;
+import searchFreelancer.workfreela.Mapper.DetailServiceMapper;
 import searchFreelancer.workfreela.exceptions.DetalhesNotFoundException;
 import searchFreelancer.workfreela.repository.DetailServiceRepository;
-import searchFreelancer.workfreela.repository.ProfissionalRepository;
-import searchFreelancer.workfreela.repository.ServicosRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,64 +20,63 @@ public class DetailService {
     private DetailServiceRepository detailServiceRepository;
 
     @Autowired
-    private ProfissionalRepository profissionalRepository; // Repositório para Profissional
+    private DetailServiceMapper detailServiceMapper;
+
+    private final DetalheServicoFactory detalheServicoFactory;
 
     @Autowired
-    private ServicosRepository servicosRepository; // Repositório para Serviço
-
-    public DetalheServico toRecord(DetalheServico detalheServico) {
-        return detailServiceRepository.save(detalheServico);
+    public DetailService(DetalheServicoFactory detalheServicoFactory) {
+        this.detalheServicoFactory = detalheServicoFactory;
     }
 
+    // Criar um novo detalhe de serviço
+    public DetalheServico toRecord(DetalheServico detalheServico) {
+        if (detalheServico == null) {
+            throw new IllegalArgumentException("Detalhe do serviço não pode ser nulo");
+        }
+
+        try {
+            // Criação usando o Factory Method
+            DetalheServico newDetalheServico = detalheServicoFactory.create();
+            newDetalheServico.setPreco_servico(detalheServico.getPreco_servico());
+            newDetalheServico.setTempo_experiencia(detalheServico.getTempo_experiencia());
+            newDetalheServico.setId(detalheServico.getId());
+
+            return detailServiceRepository.save(newDetalheServico);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao salvar o detalhe do serviço", e);
+        }
+    }
+
+    // Listar todos os detalhes de serviço
     public List<DetalheServico> searchAll() {
         return detailServiceRepository.findAll();
     }
 
+    // Buscar um detalhe de serviço pelo ID e retornar o DTO
     public DetailResponseDTO searchDetalheById(DetalheServico_PK id) throws DetalhesNotFoundException {
         Optional<DetalheServico> opt = detailServiceRepository.findById(id);
         if (opt.isPresent()) {
             DetalheServico detalheServico = opt.get();
-
-            // Buscar o nome do profissional
-            Profissional profissional = profissionalRepository.findById(
-                            detalheServico.getId().getId_profissional().getId())
-                    .orElseThrow(() -> new DetalhesNotFoundException("Profissional não encontrado"));
-            String nomeProfissional = profissional.getNome();
-
-            // Buscar o nome do serviço
-            Servicos servico = servicosRepository.findById(
-                            detalheServico.getId().getId_servicos().getId())
-                    .orElseThrow(() -> new DetalhesNotFoundException("Serviço não encontrado"));
-            String nomeServico = servico.getNome_servico();
-
-            // Criar o DTO com os dados completos
-            DetailResponseDTO dto = new DetailResponseDTO();
-            dto.setId_profissional(detalheServico.getId().getId_profissional().getId());
-            dto.setNome(nomeProfissional); // Nome do profissional
-            dto.setId_servicos(detalheServico.getId().getId_servicos().getId());
-            dto.setNome_servico(nomeServico); // Nome do serviço
-            dto.setPreco(detalheServico.getPreco_servico());
-            dto.setTempo_experiencia(detalheServico.getTempo_experiencia());
-
-            return dto;
+            // Converte a entidade para DTO usando o mapper
+            return detailServiceMapper.toDTO(detalheServico);
         }
-        throw new DetalhesNotFoundException("ID não encontrado: " + id);
+        throw new DetalhesNotFoundException("Detalhe de serviço não encontrado.");
     }
 
-    // Método de atualização (update)
+    // Atualizar um detalhe de serviço existente
     public DetalheServico update(DetalheServico_PK id, DetalheServico detalheServico) throws DetalhesNotFoundException {
         if (!detailServiceRepository.existsById(id)) {
-            throw new DetalhesNotFoundException("ID não encontrado: " + id);
+            throw new DetalhesNotFoundException("Detalhe de serviço não encontrado: " + id);
         }
-        // Garantir que o ID do DetalheServico a ser atualizado seja o mesmo do ID fornecido
-        detalheServico.setId(id);
+        detalheServico.setId(id);  // Garantir que o ID corresponde ao detalhe de serviço atualizado
         return detailServiceRepository.save(detalheServico);
     }
 
-    // Método de deleção (delete)
+    // Deletar um detalhe de serviço
     public void delete(DetalheServico_PK id) throws DetalhesNotFoundException {
         if (!detailServiceRepository.existsById(id)) {
-            throw new DetalhesNotFoundException("ID não encontrado: " + id);
+            throw new DetalhesNotFoundException("Detalhe de serviço não encontrado: " + id);
         }
         detailServiceRepository.deleteById(id);
     }
