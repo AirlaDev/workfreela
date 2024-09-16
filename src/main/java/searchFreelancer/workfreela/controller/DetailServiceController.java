@@ -47,6 +47,7 @@ public class DetailServiceController {
             @PathVariable(value = "profissionalId") Long profissionalId,
             @PathVariable(value = "servicoId") Long servicoId) {
         try {
+            // Usando a facade para buscar os detalhes
             DetailResponseDTO detailResponseDTO = freelancerFacade.getDetalheServicoById(profissionalId, servicoId);
             return ResponseEntity.status(HttpStatus.OK).body(detailResponseDTO);
         } catch (DetalhesNotFoundException e) {

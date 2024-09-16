@@ -12,9 +12,11 @@ import java.util.Objects;
 @Entity
 @Table(name = "servicos")
 public class Servicos {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     private String nome_servico;
     private String descricao;
     private String categoria;

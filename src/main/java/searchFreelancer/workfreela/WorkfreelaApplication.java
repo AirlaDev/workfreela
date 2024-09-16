@@ -10,4 +10,5 @@ public class WorkfreelaApplication {
 		SpringApplication.run(WorkfreelaApplication.class, args);
 	}
 
+
 }
