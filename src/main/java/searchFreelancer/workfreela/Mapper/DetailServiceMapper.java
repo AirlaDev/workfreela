@@ -25,7 +25,6 @@ public class DetailServiceMapper {
         if (dto.getId_profissional() != null) {
             id.setId_profissional(new Profissional(dto.getId_profissional()));
         }
-
         if (dto.getId_servicos() != null) {
             id.setId_servicos(new Servicos(dto.getId_servicos()));
         } else {
@@ -37,20 +36,20 @@ public class DetailServiceMapper {
 
     public DetailResponseDTO toDTO(DetalheServico entity) {
         DetailResponseDTO dto = new DetailResponseDTO();
-        // Copia os detalhes do profissional e do serviço para o DTO
         if (entity.getId().getId_profissional() != null) {
             dto.setId_profissional(entity.getId().getId_profissional().getId());
-            dto.setNome(entity.getId().getId_profissional().getNome()); // Nome do profissional
+            dto.setNome(entity.getId().getId_profissional().getNome()); // Corrigido para garantir o nome
+        } else {
+            dto.setNome("Nome não encontrado");
         }
-
         if (entity.getId().getId_servicos() != null) {
             dto.setId_servicos(entity.getId().getId_servicos().getId());
-            dto.setNome_servico(entity.getId().getId_servicos().getNome_servico()); // Nome do serviço
+            dto.setNome_servico(entity.getId().getId_servicos().getNome_servico()); // Corrigido para garantir o nome do serviço
+        } else {
+            dto.setNome_servico("Serviço não encontrado");
         }
-
         dto.setPreco(entity.getPreco_servico());
         dto.setTempo_experiencia(entity.getTempo_experiencia());
-
         return dto;
     }
 

@@ -7,6 +7,7 @@ import searchFreelancer.workfreela.Entity.Profissional;
 public class ProfissionalFactory implements EntityFactory<Profissional> {
     @Override
     public Profissional create() {
+
         return new Profissional();
     }
 }
